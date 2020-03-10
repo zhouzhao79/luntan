@@ -59,6 +59,8 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(gitHubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(gitHubUser.getAvatar_url());
+            user.setBio(gitHubUser.getBio());
             userMapper.insert(user);
             //账户长期在线设置
             //写入cookie
