@@ -1,10 +1,7 @@
 package com.example.luntan.mapper;
 
 import com.example.luntan.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -17,4 +14,10 @@ public interface UserMapper {
 
     @Select("select * from user us where us.id=#{id}")
     User findById(@Param("id") Integer id);
+
+    @Select("select * from user us where us.ACCOUNT_ID=#{AccountId}")
+    User findByAccountId(@Param("AccountId") String AccountId);
+
+    @Update("UPDATE `user` u set u.GMT_MODIFIED=#{gmtModified},u.TOKEN=#{TOKEN} where u.ACCOUNT_ID=#{AccountId}")
+    Boolean updateByAccountId(@Param("gmtModified") Long gmtModified,@Param("AccountId") String AccountId,@Param("TOKEN") String TOKEN);
 }

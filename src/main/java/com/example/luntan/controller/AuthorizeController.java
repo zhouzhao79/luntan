@@ -52,19 +52,28 @@ public class AuthorizeController {
         GitHubUser gitHubUser=githubProvider.getUser(accessToken);
         if (gitHubUser !=null){
             //存进数据库
-            User user = new User();
-            String token = UUID.randomUUID().toString();
-            user.setToken(token);
-            user.setName(gitHubUser.getName());
-            user.setAccountId(String.valueOf(gitHubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            user.setAvatarUrl(gitHubUser.getAvatar_url());
-            user.setBio(gitHubUser.getBio());
-            userMapper.insert(user);
-            //账户长期在线设置
-            //写入cookie
-            response.addCookie(new Cookie("token",token));
+            User byAccountId = userMapper.findByAccountId(String.valueOf(gitHubUser.getId()));
+            if (byAccountId!=null){
+                String token = UUID.randomUUID().toString();
+                userMapper.updateByAccountId(System.currentTimeMillis(),byAccountId.getAccountId(),token);
+                response.addCookie(new Cookie("token",token));
+            }else {
+                User user = new User();
+                String token = UUID.randomUUID().toString();
+                user.setToken(token);
+                user.setName(gitHubUser.getName());
+                user.setAccountId(String.valueOf(gitHubUser.getId()));
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                user.setAvatarUrl(gitHubUser.getAvatar_url());
+                user.setBio(gitHubUser.getBio());
+                userMapper.insert(user);
+
+                //账户长期在线设置
+                //写入cookie
+                response.addCookie(new Cookie("token",token));
+            }
+
             //登录成功 写cookie 和 session
 
             //request.getSession().setAttribute("user",gitHubUser);  向数据库存储就是这一步的意思
@@ -76,5 +85,15 @@ public class AuthorizeController {
             return "redirect:/";
         }
 
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }

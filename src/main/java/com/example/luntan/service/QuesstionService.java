@@ -1,5 +1,6 @@
 package com.example.luntan.service;
 
+import com.example.luntan.dto.PaginationDTO;
 import com.example.luntan.dto.QuestionDTO;
 import com.example.luntan.mapper.QuesstionMapper;
 import com.example.luntan.mapper.UserMapper;
@@ -20,9 +21,22 @@ public class QuesstionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDTO> findAllList() {
-        List<Question> list = quesstionMapper.findAllList();
+    public PaginationDTO findAllList(Integer page, Integer size) {
+        PaginationDTO paginationDTO = new PaginationDTO();
+
+        Integer totalCount = quesstionMapper.countAll();
+        paginationDTO.setPagination(totalCount,page,size);
+        if (page<1){
+            page=1;
+        }
+        if (page>paginationDTO.getTotalPage()){
+            page=paginationDTO.getTotalPage();
+        }
+
+        int offset=(page-1)*size;
+        List<Question> list = quesstionMapper.findAllList(offset,size);
         List<QuestionDTO> questionDTOS=new ArrayList<>();
+
         for (Question question :list) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
@@ -30,6 +44,7 @@ public class QuesstionService {
             questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
         }
-        return questionDTOS;
+        paginationDTO.setQuestionDTOS(questionDTOS);
+        return paginationDTO;
     }
 }

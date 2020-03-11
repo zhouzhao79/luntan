@@ -1,5 +1,6 @@
 package com.example.luntan.controller;
 
+import com.example.luntan.dto.PaginationDTO;
 import com.example.luntan.dto.QuestionDTO;
 import com.example.luntan.mapper.QuesstionMapper;
 import com.example.luntan.mapper.UserMapper;
@@ -26,7 +27,10 @@ public class IndexController {
     private QuesstionService quesstionService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request, HttpServletResponse response,Model model){
+    public String index(HttpServletRequest request, HttpServletResponse response,Model model,
+                        @RequestParam(name="page",defaultValue = "1")Integer page,
+                        @RequestParam(name = "size",defaultValue = "9")Integer size
+                        ){
         String cookie1=request.getHeader("cookie");
         response.addCookie(new Cookie("suijiID", UUID.randomUUID().toString()));
         Cookie[] cookies = request.getCookies();
@@ -44,9 +48,8 @@ public class IndexController {
 
             }
        }
-
-        List<QuestionDTO> questions=quesstionService.findAllList();
-        model.addAttribute("questions",questions);
+        PaginationDTO pagination = quesstionService.findAllList(page, size);
+        model.addAttribute("pagination",pagination);
         return "index";
     }
 
