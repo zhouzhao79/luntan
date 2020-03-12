@@ -18,6 +18,6 @@ public interface UserMapper {
     @Select("select * from user us where us.ACCOUNT_ID=#{AccountId}")
     User findByAccountId(@Param("AccountId") String AccountId);
 
-    @Update("UPDATE `user` u set u.GMT_MODIFIED=#{gmtModified},u.TOKEN=#{TOKEN} where u.ACCOUNT_ID=#{AccountId}")
-    Boolean updateByAccountId(@Param("gmtModified") Long gmtModified,@Param("AccountId") String AccountId,@Param("TOKEN") String TOKEN);
+    @Update("UPDATE `user` u set u.GMT_MODIFIED=#{gmtModified},u.TOKEN=#{TOKEN},u.avatar_url=#{avatarUrl} where u.ACCOUNT_ID=#{AccountId}")
+    Boolean updateByAccountId(@Param("gmtModified") Long gmtModified,@Param("AccountId") String AccountId,@Param("TOKEN") String TOKEN,@Param("avatarUrl") String avatarUrl);
 }

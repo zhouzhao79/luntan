@@ -19,4 +19,10 @@ public interface QuesstionMapper {
 
     @Select("select count(1) from question")
     Integer countAll();
+
+    @Select("select * from  question where creator=#{userId} order by gmt_create desc limit #{offset},#{size}")
+    List<Question> findByIdAllList(@Param("userId")Integer userId, @Param("offset")int offset,@Param("size") Integer size);
+
+    @Select("select count(1) from question where creator=#{userId}")
+    Integer countByIdAll(@Param("userId")Integer userId);
 }

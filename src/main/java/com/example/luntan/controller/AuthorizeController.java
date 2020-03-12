@@ -55,7 +55,7 @@ public class AuthorizeController {
             User byAccountId = userMapper.findByAccountId(String.valueOf(gitHubUser.getId()));
             if (byAccountId!=null){
                 String token = UUID.randomUUID().toString();
-                userMapper.updateByAccountId(System.currentTimeMillis(),byAccountId.getAccountId(),token);
+                userMapper.updateByAccountId(System.currentTimeMillis(),byAccountId.getAccountId(),token,byAccountId.getAvatarUrl());
                 response.addCookie(new Cookie("token",token));
             }else {
                 User user = new User();
