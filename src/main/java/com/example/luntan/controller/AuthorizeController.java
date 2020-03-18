@@ -4,6 +4,7 @@ import com.example.luntan.dto.AccessTokenDTO;
 import com.example.luntan.dto.GitHubUser;
 import com.example.luntan.mapper.UserMapper;
 import com.example.luntan.model.User;
+import com.example.luntan.model.UserExample;
 import com.example.luntan.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -52,11 +54,19 @@ public class AuthorizeController {
         GitHubUser gitHubUser=githubProvider.getUser(accessToken);
         if (gitHubUser !=null){
             //存进数据库
-            User byAccountId = userMapper.findByAccountId(String.valueOf(gitHubUser.getId()));
-            if (byAccountId!=null){
-                String token = UUID.randomUUID().toString();
-                userMapper.updateByAccountId(System.currentTimeMillis(),byAccountId.getAccountId(),token,byAccountId.getAvatarUrl());
-                response.addCookie(new Cookie("token",token));
+            UserExample userExample=new UserExample();
+            userExample.createCriteria().andAccountIdEqualTo(String.valueOf(gitHubUser.getId()));
+            List<User> users = userMapper.selectByExample(userExample);
+            if (users.size()!=0){
+                User user=users.get(0);
+                    String token = UUID.randomUUID().toString();
+                    user.setToken(token);
+                    user.setAvatarUrl(gitHubUser.getAvatar_url());
+                    user.setGmtModified(System.currentTimeMillis());
+                    userMapper.updateByPrimaryKey(user);
+                    response.addCookie(new Cookie("token",token));
+
+
             }else {
                 User user = new User();
                 String token = UUID.randomUUID().toString();

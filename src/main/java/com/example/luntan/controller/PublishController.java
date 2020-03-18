@@ -1,12 +1,15 @@
 package com.example.luntan.controller;
 
+import com.example.luntan.dto.QuestionDTO;
 import com.example.luntan.mapper.QuesstionMapper;
 import com.example.luntan.model.Question;
 import com.example.luntan.model.User;
+import com.example.luntan.service.QuesstionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
@@ -15,19 +18,33 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private QuesstionMapper quesstionMapper;
+    private QuesstionService quesstionService;
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id")Integer id,Model model){
+        QuestionDTO question = quesstionService.findByQuestionId(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+        return "publish";
+    }
 
     @GetMapping("/publish")
-    public String publish(){
-
+    public String publish(HttpServletRequest request){
+        User user=(User) request.getSession().getAttribute("user");
+        if (user==null){
+            return "redirect:/";
+        }
         return "publish";
     }
 
     @PostMapping("/publish")
     public String doPublish(
-            @RequestParam("title") String title,
-            @RequestParam("description")String description,
-            @RequestParam("tag") String tag,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value ="description" , required = false)String description,
+            @RequestParam(value ="tag", required = false) String tag,
+            @RequestParam(value ="id", required = false) Integer id,
             HttpServletRequest request,
             Model model
     ){
@@ -58,9 +75,9 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        quesstionMapper.create(question);
+
+        question.setId(id);
+        quesstionService.createOrUpdate(question);
         return "redirect:/";
 
     }
