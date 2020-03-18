@@ -46,8 +46,6 @@ public class QuesstionService {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
-            System.out.println(questionDTO);
-            System.out.println(question);
             questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
         }
@@ -59,6 +57,7 @@ public class QuesstionService {
         PaginationDTO paginationDTO = new PaginationDTO();
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria().andCreatorEqualTo(userId);
+       //
         int totalCount = (int)quesstionMapper.countByExample(questionExample);
         paginationDTO.setPagination(totalCount,page,size);
         if (page<1){
@@ -72,6 +71,7 @@ public class QuesstionService {
 
         QuestionExample questionExample1 = new QuestionExample();
         questionExample1.createCriteria().andCreatorEqualTo(userId);
+        questionExample1.setOrderByClause("gmt_create desc");
         List<Question> list = quesstionMapper.selectByExampleWithRowbounds(questionExample1, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOS=new ArrayList<>();
 
@@ -101,6 +101,9 @@ public class QuesstionService {
             //创建
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
+            question.setLikeCount(0);
+            question.setViewCount(0);
+            question.setCommentCount(0);
             quesstionMapper.insert(question);
         }else {
             //更新
