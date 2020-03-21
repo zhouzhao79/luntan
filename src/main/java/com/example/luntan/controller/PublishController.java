@@ -1,7 +1,6 @@
 package com.example.luntan.controller;
 
 import com.example.luntan.dto.QuestionDTO;
-import com.example.luntan.mapper.QuesstionMapper;
 import com.example.luntan.model.Question;
 import com.example.luntan.model.User;
 import com.example.luntan.service.QuesstionService;

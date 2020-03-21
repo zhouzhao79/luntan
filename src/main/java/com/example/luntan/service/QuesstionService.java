@@ -2,7 +2,9 @@ package com.example.luntan.service;
 
 import com.example.luntan.dto.PaginationDTO;
 import com.example.luntan.dto.QuestionDTO;
-import com.example.luntan.mapper.QuesstionMapper;
+import com.example.luntan.exception.CustomizeErrorCode;
+import com.example.luntan.exception.CustomizeException;
+import com.example.luntan.mapper.QuestionExtMapper;
 import com.example.luntan.mapper.QuestionMapper;
 import com.example.luntan.mapper.UserMapper;
 import com.example.luntan.model.Question;
@@ -23,6 +25,8 @@ public class QuesstionService {
     private QuestionMapper quesstionMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     public PaginationDTO findAllList(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
@@ -87,7 +91,11 @@ public class QuesstionService {
     }
 
     public QuestionDTO findByQuestionId(Integer id) {
+
         Question question=quesstionMapper.selectByPrimaryKey(id);
+        if (question==null){
+            throw  new CustomizeException(CustomizeErrorCode.QUESESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO=new QuestionDTO();
         User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDTO.setUser(user);
@@ -112,7 +120,21 @@ public class QuesstionService {
 //            example.createCriteria()
 //                    .andIdEqualTo(question.getId());
 //            quesstionMapper.updateByExampleSelective(question,example);
-            quesstionMapper.updateByPrimaryKeySelective(question);
+            int update = quesstionMapper.updateByPrimaryKeySelective(question);
+            if (update!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESESTION_NOT_FOUND);
+            }
         }
+    }
+
+    /**
+     * 增加浏览量
+     * @param id
+     */
+    public void incView(Integer id) {
+        Question record = new Question();
+        record.setId(id);
+        record.setViewCount(1);
+        questionExtMapper.incView(record);
     }
 }
