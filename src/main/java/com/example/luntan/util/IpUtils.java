@@ -1,4 +1,4 @@
-package com.example.luntan.Aspect;
+package com.example.luntan.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

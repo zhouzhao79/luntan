@@ -1,6 +1,6 @@
 package com.example.luntan.controller;
 
-import com.example.luntan.Aspect.RedisUtils;
+import com.example.luntan.util.RedisUtils;
 import com.example.luntan.externmy.PageView;
 import com.example.luntan.dto.QuestionDTO;
 import com.example.luntan.model.User;

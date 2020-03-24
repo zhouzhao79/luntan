@@ -1,6 +1,6 @@
 package com.example.luntan.controller;
 
-import com.example.luntan.Aspect.RedisUtils;
+import com.example.luntan.util.RedisUtils;
 import com.example.luntan.dto.PaginationDTO;
 import com.example.luntan.service.QuesstionService;
 import org.springframework.beans.factory.annotation.Autowired;

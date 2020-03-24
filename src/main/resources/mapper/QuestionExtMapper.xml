@@ -22,4 +22,11 @@
     view_count = view_count+#{viewCount,jdbcType=INTEGER}
     where id=#{id}
   </update>
+
+  <update id="inCommentCount" parameterType="com.example.luntan.model.Question">
+    update question
+    set
+    comment_count = comment_count+#{comment_count,jdbcType=INTEGER}
+    where id=#{id}
+  </update>
 </mapper>

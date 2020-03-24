@@ -1,6 +1,8 @@
-package com.example.luntan.Aspect;
+package com.example.luntan.aop;
 
 
+import com.example.luntan.util.IpUtils;
+import com.example.luntan.util.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -46,7 +48,7 @@ public class PageViewAspect {
         Object obj = null;
         try {
          //   String ipAddr = IpUtils.getIpAddr();
-            String ip=IpUtils.getIpAddr(request);
+            String ip= IpUtils.getIpAddr(request);
             System.out.println(ip);
             log.info("ipAddr:{}", ip);
             String key = "articleId_" + articleId;
