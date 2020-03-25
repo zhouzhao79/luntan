@@ -8,6 +8,7 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     QUESESTION_NOT_FOUND("你找到问题不在了，要不要换个试试？");
 
     private String message;
+    private Integer code;
 
 
 
@@ -18,5 +19,10 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     @Override
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public Integer getCode() {
+        return code;
     }
 }

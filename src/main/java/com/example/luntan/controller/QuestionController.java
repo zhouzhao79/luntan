@@ -24,10 +24,10 @@ public class QuestionController {
     @PageView
     @GetMapping("question/{id}")
     public String question(@PathVariable(name = "id")Integer id, Model model, HttpServletRequest request){
-        User user=(User) request.getSession().getAttribute("user");
-        if (user==null){
-           return "redirect:/";
-        }
+//        User user=(User) request.getSession().getAttribute("user");
+//        if (user==null){
+//           return "redirect:/";
+//        }
         QuestionDTO questionDTO=quesstionService.findByQuestionId(id);
         //累加阅读数
        // quesstionService.incView(id);

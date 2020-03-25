@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class SessionInterceptor implements HandlerInterceptor {
+public class IndexSessionInterceptor implements HandlerInterceptor {
     @Autowired
     UserMapper userMapper;
     @Override
@@ -43,12 +43,9 @@ public class SessionInterceptor implements HandlerInterceptor {
 //            }
 //
 //        }
-        if(users==null){
-            response.sendRedirect(request.getContextPath()+"/");
-            return false;
-        }else{
+
             return true;
-        }
+
 
     }
 
